@@ -25,12 +25,22 @@ public class SimulationController {
     /**
      * Start the simulation with vendors and customers.
      *
+     * @param totalTickets the total number of tickets to be released
+     * @param releaseRate the rate at which tickets are released by the vendor
+     * @param retrievalRate the rate at which tickets are retrieved by the customer
      * @return a success message
      */
     @PostMapping("/start")
-    public String startSimulation() {
-        simulationService.startSimulation();
-        logService.saveLog("Simulation started!");
+    public String startSimulation(
+            @RequestParam int totalTickets,
+            @RequestParam int releaseRate,
+            @RequestParam int retrievalRate
+    ) {
+        simulationService.startSimulation(totalTickets, releaseRate, retrievalRate);
+        logService.saveLog("Simulation started with configuration: " +
+                "{totalTickets=" + totalTickets +
+                ", releaseRate=" + releaseRate +
+                ", retrievalRate=" + retrievalRate + "}");
         return "Simulation started successfully!";
     }
 

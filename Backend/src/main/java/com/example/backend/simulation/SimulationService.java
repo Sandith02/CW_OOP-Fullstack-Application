@@ -11,22 +11,34 @@ import java.util.concurrent.Executors;
 public class SimulationService {
 
     private ExecutorService executorService;
+    private boolean isRunning = false;
+    private int totalTicketsSold = 0; // Counter to track sold tickets
 
     @Autowired
     private TicketService ticketService;
 
     // Starts the simulation by running vendor and customer threads
-    public void startSimulation() {
-        // Initialize the thread pool with 2 threads: 1 Vendor + 1 Customer
-        executorService = Executors.newFixedThreadPool(2);
+    public synchronized void startSimulation(int totalTickets, int releaseRate, int retrievalRate) {
+        if (isRunning) {
+            System.out.println("Simulation is already running.");
+            return;
+        }
 
-        // Submit Vendor thread
+        isRunning = true;
+        totalTicketsSold = 0;
+        executorService = Executors.newFixedThreadPool(2); // 1 Vendor + 1 Customer
+
+        // Vendor thread: Adds tickets periodically
         executorService.submit(() -> {
             try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    ticketService.addTickets(5); // Add 5 tickets per iteration
-                    System.out.println("Vendor added 5 tickets.");
-                    Thread.sleep(1000); // Simulate ticket addition rate (1 second)
+                while (isRunning && totalTicketsSold < totalTickets) {
+                    synchronized (this) {
+                        if (ticketService.getAvailableTicketCount() < totalTickets) {
+                            ticketService.addTickets(releaseRate); // Add tickets
+                            System.out.println("Vendor added " + releaseRate + " tickets.");
+                        }
+                    }
+                    Thread.sleep(1000); // Simulate ticket release rate
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -34,14 +46,20 @@ public class SimulationService {
             }
         });
 
-        // Submit Customer thread
+        // Customer thread: Buys tickets periodically
         executorService.submit(() -> {
             try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    ticketService.removeTicket(); // Customer purchases 1 ticket per iteration
-                    System.out.println("Customer purchased a ticket.");
-                    Thread.sleep(1000); // Simulate customer retrieval rate (1 second)
+                while (isRunning && totalTicketsSold < totalTickets) {
+                    synchronized (this) {
+                        if (ticketService.getAvailableTicketCount() > 0) {
+                            ticketService.removeTicket(); // Sell a ticket
+                            totalTicketsSold++;
+                            System.out.println("Customer purchased a ticket. Total sold: " + totalTicketsSold);
+                        }
+                    }
+                    Thread.sleep(1000); // Simulate customer retrieval rate
                 }
+                stopSimulation(); // Stop simulation when all tickets are sold
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.out.println("Customer thread interrupted.");
@@ -50,7 +68,9 @@ public class SimulationService {
     }
 
     // Stops the simulation by shutting down all threads
-    public void stopSimulation() {
+    public synchronized void stopSimulation() {
+        if (!isRunning) return;
+        isRunning = false;
         if (executorService != null) {
             executorService.shutdownNow();
             System.out.println("Simulation stopped and threads shut down.");
