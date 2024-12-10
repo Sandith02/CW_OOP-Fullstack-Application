@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const SystemConfiguration = () => {
+const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
   const [config, setConfig] = useState({
     totalTickets: "",
     ticketReleaseRate: "",
@@ -16,8 +16,8 @@ const SystemConfiguration = () => {
 
   const saveConfiguration = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/config", config);
-      alert(response.data);
+      await axios.post("http://localhost:8080/api/config", config);
+      alert("Configuration saved successfully!");
     } catch (error) {
       console.error("Error saving configuration:", error);
       alert("Failed to save configuration.");
@@ -26,22 +26,20 @@ const SystemConfiguration = () => {
 
   const startSimulation = async () => {
     try {
-      const { totalTickets, ticketReleaseRate, customerRetrievalRate } = config;
-
-      if (!totalTickets || !ticketReleaseRate || !customerRetrievalRate) {
-        alert("Please fill in all required fields.");
-        return;
-      }
-
-      const response = await axios.post("http://localhost:8080/api/start", null, {
-        params: {
-          totalTickets,
-          releaseRate: ticketReleaseRate,
-          retrievalRate: customerRetrievalRate,
-        },
-      });
-
-      alert(response.data);
+      clearLogs(); // Clear logs before starting a new simulation
+      await axios.post(
+        `http://localhost:8080/api/simulation/start`,
+        null, // No body is sent, so this is null
+        {
+          params: {
+            totalTickets: config.totalTickets,
+            ticketReleaseRate: config.ticketReleaseRate,
+            retrievalRate: config.customerRetrievalRate,
+          },
+        }
+      );
+      alert("Simulation started successfully!");
+      setSimulationRunning(true); // Notify App.js that simulation is running
     } catch (error) {
       console.error("Error starting simulation:", error);
       alert("Failed to start simulation.");

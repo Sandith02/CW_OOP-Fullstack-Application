@@ -1,22 +1,12 @@
-// src/components/Controls.js
 import React from "react";
 import axios from "axios";
 
-const Controls = () => {
-  const startSimulation = async () => {
-    try {
-      const response = await axios.post("http://localhost:8080/api/start");
-      alert(response.data);
-    } catch (error) {
-      console.error("Error starting simulation:", error);
-      alert("Failed to start simulation.");
-    }
-  };
-
+const Controls = ({ setSimulationRunning }) => {
   const stopSimulation = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/stop");
-      alert(response.data);
+      await axios.post("http://localhost:8080/api/simulation/stop");
+      alert("Simulation stopped successfully!");
+      setSimulationRunning(false); // Notify App.js that simulation stopped
     } catch (error) {
       console.error("Error stopping simulation:", error);
       alert("Failed to stop simulation.");
@@ -25,11 +15,11 @@ const Controls = () => {
 
   return (
     <div>
-      <button onClick={startSimulation} style={{ backgroundColor: "green", color: "white" }}>
-        Start
-      </button>
-      <button onClick={stopSimulation} style={{ backgroundColor: "red", color: "white" }}>
-        Stop
+      <button
+        onClick={stopSimulation}
+        style={{ backgroundColor: "red", color: "white" }}
+      >
+        Stop Simulation
       </button>
     </div>
   );

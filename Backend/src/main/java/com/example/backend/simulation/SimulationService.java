@@ -1,79 +1,87 @@
 package com.example.backend.simulation;
 
-import com.example.backend.services.TicketService;
+import com.example.backend.models.Ticket;
+import com.example.backend.repositories.TicketRepository;
+import com.example.backend.services.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class SimulationService {
 
-    private ExecutorService executorService;
-    private boolean isRunning = false;
-    private int totalTicketsSold = 0; // Counter to track sold tickets
+    private boolean simulationRunning = false; // Flag to indicate if the simulation is running
+    private int totalTickets;
+    private int ticketReleaseRate;
+    private int retrievalRate;
 
     @Autowired
-    private TicketService ticketService;
+    private LogService logService;
 
-    // Starts the simulation by running vendor and customer threads
-    public synchronized void startSimulation(int totalTickets, int releaseRate, int retrievalRate) {
-        if (isRunning) {
-            System.out.println("Simulation is already running.");
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    public void startSimulation(int totalTickets, int ticketReleaseRate, int retrievalRate) {
+        if (simulationRunning) {
+            logService.saveLog("Simulation is already running!");
             return;
         }
 
-        isRunning = true;
-        totalTicketsSold = 0;
-        executorService = Executors.newFixedThreadPool(2); // 1 Vendor + 1 Customer
+        this.simulationRunning = true;
+        this.totalTickets = totalTickets;
+        this.ticketReleaseRate = ticketReleaseRate;
+        this.retrievalRate = retrievalRate;
 
-        // Vendor thread: Adds tickets periodically
-        executorService.submit(() -> {
-            try {
-                while (isRunning && totalTicketsSold < totalTickets) {
-                    synchronized (this) {
-                        if (ticketService.getAvailableTicketCount() < totalTickets) {
-                            ticketService.addTickets(releaseRate); // Add tickets
-                            System.out.println("Vendor added " + releaseRate + " tickets.");
-                        }
-                    }
-                    Thread.sleep(1000); // Simulate ticket release rate
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Vendor thread interrupted.");
-            }
-        });
+        logService.saveLog("Simulation started!");
 
-        // Customer thread: Buys tickets periodically
-        executorService.submit(() -> {
-            try {
-                while (isRunning && totalTicketsSold < totalTickets) {
-                    synchronized (this) {
-                        if (ticketService.getAvailableTicketCount() > 0) {
-                            ticketService.removeTicket(); // Sell a ticket
-                            totalTicketsSold++;
-                            System.out.println("Customer purchased a ticket. Total sold: " + totalTicketsSold);
-                        }
-                    }
-                    Thread.sleep(1000); // Simulate customer retrieval rate
-                }
-                stopSimulation(); // Stop simulation when all tickets are sold
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Customer thread interrupted.");
-            }
-        });
+        // Create tickets
+        for (int i = 0; i < totalTickets; i++) {
+            Ticket ticket = new Ticket();
+            ticket.setStatus("AVAILABLE");
+            ticketRepository.save(ticket);
+        }
+
+        // Start simulation process
+        new Thread(this::simulateTickets).start();
     }
 
-    // Stops the simulation by shutting down all threads
-    public synchronized void stopSimulation() {
-        if (!isRunning) return;
-        isRunning = false;
-        if (executorService != null) {
-            executorService.shutdownNow();
-            System.out.println("Simulation stopped and threads shut down.");
+    public void stopSimulation() {
+        if (!simulationRunning) {
+            logService.saveLog("Simulation is not running!");
+            return;
+        }
+
+        this.simulationRunning = false;
+        logService.saveLog("Simulation stopped!");
+    }
+
+    private void simulateTickets() {
+        try {
+            int ticketsSold = 0;
+
+            while (simulationRunning && ticketsSold < totalTickets) {
+                Thread.sleep(1000 / ticketReleaseRate); // Release rate delay
+
+                Ticket ticket = ticketRepository.findAvailableTickets().stream().findFirst().orElse(null);
+                if (ticket != null) {
+                    ticket.setStatus("SOLD");
+                    ticketRepository.save(ticket);
+                    ticketsSold++;
+                    logService.saveLog("Releasing ticket #" + ticketsSold);
+                }
+
+                Thread.sleep(1000 / retrievalRate); // Retrieval rate delay
+                logService.saveLog("Customer retrieving a ticket.");
+
+                // Stop simulation when all tickets are sold
+                if (ticketsSold >= totalTickets) {
+                    logService.saveLog("All tickets sold. Stopping simulation...");
+                    stopSimulation();
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logService.saveLog("Simulation interrupted: " + e.getMessage());
         }
     }
 }

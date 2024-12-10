@@ -11,4 +11,6 @@ import java.util.List;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT t FROM Ticket t WHERE t.status = 'AVAILABLE'")
     List<Ticket> findAvailableTickets();
+
+    List<Ticket> findByStatus(String status);
 }
