@@ -11,6 +11,13 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Validation: Prevent zero or negative values
+    if (value <= 0) {
+      alert(`${name.replace(/([A-Z])/g, ' $1')} must be greater than zero.`);
+      return;
+    }
+
     setConfig({ ...config, [name]: value });
   };
 
@@ -47,9 +54,9 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
   };
 
   return (
-    <div class="form-container">
+    <div className="form-container">
       <div className="formTitle">System Configuration</div>
-      <div class="form-group">
+      <div className="form-group">
         <label>Total Tickets:</label>
         <input
           type="number"
@@ -58,7 +65,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div class="form-group">
+      <div className="form-group">
         <label>Ticket Release Rate (tickets per second):</label>
         <input
           type="number"
@@ -67,7 +74,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div class="form-group">
+      <div className="form-group">
         <label>Customer Retrieval Rate (tickets per second):</label>
         <input
           type="number"
@@ -76,7 +83,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div class="form-group">
+      <div className="form-group">
         <label>Maximum Ticket Capacity:</label>
         <input
           type="number"
@@ -86,8 +93,8 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
         />
       </div>
       <div className="form-submit-btn-set">
-      <button class="form-submit-btn"  onClick={saveConfiguration}>Save Configuration</button>
-      <button class="form-submit-btn"  onClick={startSimulation}>Start Simulation</button>
+        <button className="form-submit-btn" onClick={saveConfiguration}>Save Configuration</button>
+        <button className="form-submit-btn" onClick={startSimulation}>Start Simulation</button>
       </div>
     </div>
   );
