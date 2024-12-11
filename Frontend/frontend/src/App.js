@@ -1,15 +1,15 @@
+// App.js
 import './Styles.css';
 import React, { useState, useEffect } from "react";
-import SystemConfiguration from "./components/SystemConfiguration";
-import SystemLogs from "./components/SystemLogs";
-import Controls from "./components/Controls";
 import axios from "axios";
+import Homepage from "./components/Homepage";
+import Simulator from "./components/Simulator"; // Update path if needed
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   const [logs, setLogs] = useState([]); // Centralized state for logs
   const [simulationRunning, setSimulationRunning] = useState(false); // Track simulation state
 
-  // Fetch logs periodically if the simulation is running
   useEffect(() => {
     let interval;
     if (simulationRunning) {
@@ -18,7 +18,6 @@ const App = () => {
     return () => clearInterval(interval); // Clear interval on unmount or when simulation stops
   }, [simulationRunning]);
 
-  // Function to fetch logs from the backend
   const fetchLogs = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/simulation/logs");
@@ -28,18 +27,23 @@ const App = () => {
     }
   };
 
-  // Function to clear logs when a new simulation starts
-  const clearLogs = () => {
-    setLogs([]); // Clear logs state
-  };
-
   return (
-    <div>
-      <div className='Mtitle'>Real-Time Event Ticketing Simulator</div>
-      <SystemConfiguration setSimulationRunning={setSimulationRunning} clearLogs={clearLogs} />
-      <Controls setSimulationRunning={setSimulationRunning} />
-      <SystemLogs logs={logs} />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route
+          path="/simulator"
+          element={
+            <Simulator
+              logs={logs}
+              setLogs={setLogs}
+              simulationRunning={simulationRunning}
+              setSimulationRunning={setSimulationRunning}
+            />
+          }
+        />
+      </Routes>
+    </Router>
   );
 };
 

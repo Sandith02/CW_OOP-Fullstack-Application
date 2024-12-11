@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=League+Spartan:wght@100&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+   }
+
+   .homepage-container {
+    position: relative; /* Enables positioning of child elements */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background: linear-gradient(135deg, #1e1e1e, #070c0f, #00171f, #00090d); /* Gradient background */
+    overflow: hidden; /* Ensures images don’t overflow the container */
+}
+
+/* Styling for the images */
+.picture1{
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 360px; /* Set desired size */
+    height: 500px;
+}
+
+.picture2 {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 600px; /* Set desired size */
+    height: 300px;
+}
+
+.picture1 {
+    background-image: url('./Assets/pic3.png'); /* Update with correct path */
+    top: 10%; /* Adjust position */
+    left: 5%;
+  
+}
+
+.picture2 {
+    rotate: -45deg;
+    background-image: url('./Assets/pic4.png'); /* Update with correct path */
+    bottom: 0%; /* Adjust position */
+    right: -12%;
+}
+.picture3 {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 900px; /* Set desired size */
+    height: 300px;
+}
+
+.picture3 {
+    background-image: url('./Assets/pic6.png'); /* Update with correct path */
+    top: -50%; /* Adjust position */
+    right: -10%;
+    rotate: -30deg;
+  
+}
+
+.titleM {
+    margin-top: 20rem;
+    font-family: "Poppins", sans-serif;
+    font-size: 5rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0;
+}
+
+.homepage-button {
+    margin-top: 10rem;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    background-color: #1f4068;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.homepage-button:hover {
+    background-color: #162447;
+}

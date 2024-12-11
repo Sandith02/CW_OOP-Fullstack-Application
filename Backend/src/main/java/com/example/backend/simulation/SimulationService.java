@@ -6,6 +6,11 @@ import com.example.backend.services.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service responsible for simulating the ticket release and retrieval process.
+ * This service manages the simulation of ticket sales and retrievals,
+ * allowing for simulation start, stop, and ticket updates in real-time.
+ */
 @Service
 public class SimulationService {
 
@@ -20,6 +25,13 @@ public class SimulationService {
     @Autowired
     private TicketRepository ticketRepository;
 
+    /**
+     * Starts the simulation with specified parameters for ticket count, release rate, and retrieval rate.
+     *
+     * @param totalTickets the total number of tickets to simulate
+     * @param ticketReleaseRate the rate at which tickets are released (tickets per second)
+     * @param retrievalRate the rate at which tickets are retrieved (customers per second)
+     */
     public void startSimulation(int totalTickets, int ticketReleaseRate, int retrievalRate) {
         if (simulationRunning) {
             logService.saveLog("Simulation is already running!");
@@ -40,10 +52,14 @@ public class SimulationService {
             ticketRepository.save(ticket);
         }
 
-        // Start simulation process
+        // Start simulation process in a separate thread
         new Thread(this::simulateTickets).start();
     }
 
+    /**
+     * Stops the running simulation.
+     * Logs the stop event and ensures no further tickets are processed.
+     */
     public void stopSimulation() {
         if (!simulationRunning) {
             logService.saveLog("Simulation is not running!");
@@ -54,6 +70,10 @@ public class SimulationService {
         logService.saveLog("Simulation stopped!");
     }
 
+    /**
+     * Simulates the process of ticket release and retrieval, updating ticket statuses
+     * and logging events as tickets are sold and retrieved by customers.
+     */
     private void simulateTickets() {
         try {
             int ticketsSold = 0;

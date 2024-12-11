@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service class responsible for managing ticket operations such as adding,
+ * removing, and counting available tickets.
+ */
 @Service
 public class TicketService {
 
@@ -16,6 +20,11 @@ public class TicketService {
     @Autowired
     private LogService logService;
 
+    /**
+     * Adds a specified number of tickets to the system with an "AVAILABLE" status.
+     *
+     * @param count the number of tickets to add
+     */
     public void addTickets(int count) {
         for (int i = 0; i < count; i++) {
             Ticket ticket = new Ticket();
@@ -25,6 +34,11 @@ public class TicketService {
         }
     }
 
+    /**
+     * Removes one "AVAILABLE" ticket by marking it as "SOLD".
+     *
+     * @return the ticket that was updated to "SOLD", or {@code null} if no tickets are available
+     */
     public Ticket removeTicket() {
         List<Ticket> availableTickets = ticketRepository.findByStatus("AVAILABLE");
         logService.saveHibernateQuery("select t.id, t.status from ticket t where t.status = 'AVAILABLE'");
@@ -38,6 +52,11 @@ public class TicketService {
         return null;
     }
 
+    /**
+     * Retrieves the count of tickets with an "AVAILABLE" status.
+     *
+     * @return the number of available tickets
+     */
     public long getAvailableTicketCount() {
         long count = ticketRepository.findByStatus("AVAILABLE").size();
         logService.saveHibernateQuery("select count(*) from ticket where status = 'AVAILABLE'");
