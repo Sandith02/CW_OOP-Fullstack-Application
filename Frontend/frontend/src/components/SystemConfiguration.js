@@ -47,9 +47,9 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
   };
 
   return (
-    <div>
-      <h2>System Configuration</h2>
-      <div>
+    <div class="form-container">
+      <div className="formTitle">System Configuration</div>
+      <div class="form-group">
         <label>Total Tickets:</label>
         <input
           type="number"
@@ -58,7 +58,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div>
+      <div class="form-group">
         <label>Ticket Release Rate (tickets per second):</label>
         <input
           type="number"
@@ -67,7 +67,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div>
+      <div class="form-group">
         <label>Customer Retrieval Rate (tickets per second):</label>
         <input
           type="number"
@@ -76,7 +76,7 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <div>
+      <div class="form-group">
         <label>Maximum Ticket Capacity:</label>
         <input
           type="number"
@@ -85,8 +85,10 @@ const SystemConfiguration = ({ setSimulationRunning, clearLogs }) => {
           onChange={handleChange}
         />
       </div>
-      <button onClick={saveConfiguration}>Save Configuration</button>
-      <button onClick={startSimulation}>Start Simulation</button>
+      <div className="form-submit-btn-set">
+      <button class="form-submit-btn"  onClick={saveConfiguration}>Save Configuration</button>
+      <button class="form-submit-btn"  onClick={startSimulation}>Start Simulation</button>
+      </div>
     </div>
   );
 };

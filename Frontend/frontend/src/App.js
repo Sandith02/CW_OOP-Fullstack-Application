@@ -1,4 +1,4 @@
-// src/App.js
+import './Styles.css';
 import React, { useState, useEffect } from "react";
 import SystemConfiguration from "./components/SystemConfiguration";
 import SystemLogs from "./components/SystemLogs";
@@ -35,7 +35,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Real-Time Event Ticketing System</h1>
+      <div className='Mtitle'>Real-Time Event Ticketing Simulator</div>
       <SystemConfiguration setSimulationRunning={setSimulationRunning} clearLogs={clearLogs} />
       <Controls setSimulationRunning={setSimulationRunning} />
       <SystemLogs logs={logs} />

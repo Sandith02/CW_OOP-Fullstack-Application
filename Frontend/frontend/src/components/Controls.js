@@ -15,10 +15,7 @@ const Controls = ({ setSimulationRunning }) => {
 
   return (
     <div>
-      <button
-        onClick={stopSimulation}
-        style={{ backgroundColor: "red", color: "white" }}
-      >
+      <button onClick={stopSimulation} className="stop-simulation-button">
         Stop Simulation
       </button>
     </div>
