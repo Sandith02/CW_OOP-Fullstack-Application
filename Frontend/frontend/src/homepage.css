@@ -8,12 +8,14 @@
    }
 
    .homepage-container {
-    position: relative; /* Enables positioning of child elements */
+  
+    position: fixed; /* Enables positioning of child elements */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100vw;
     text-align: center;
     background: linear-gradient(135deg, #1e1e1e, #070c0f, #00171f, #00090d); /* Gradient background */
     overflow: hidden; /* Ensures images don’t overflow the container */
@@ -26,19 +28,44 @@
     background-repeat: no-repeat;
     width: 360px; /* Set desired size */
     height: 500px;
-}
+    transform: translateY(-100%);
+    animation: slideDown 4s ease forwards; 
+  }
+  @keyframes slideDown {
+      0% {
+          opacity: 0;
+          transform: translateY(-100%); 
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0); 
+      }
+  }
 
 .picture2 {
     position: absolute;
     background-size: contain;
     background-repeat: no-repeat;
     width: 600px; /* Set desired size */
-    height: 300px;
-}
+    height: 400px;
+    transform: translateY(-100%);
+    animation: slideDown 4s ease forwards; 
+  }
+  @keyframes slideDown {
+      0% {
+          opacity: 0;
+          transform: translateY(-100%); 
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0); 
+      }
+  }
+
 
 .picture1 {
     background-image: url('./Assets/pic3.png'); /* Update with correct path */
-    top: 10%; /* Adjust position */
+    top: 25%; /* Adjust position */
     left: 5%;
   
 }
@@ -46,8 +73,8 @@
 .picture2 {
     rotate: -45deg;
     background-image: url('./Assets/pic4.png'); /* Update with correct path */
-    bottom: 0%; /* Adjust position */
-    right: -12%;
+    bottom: -10%; /* Adjust position */
+    right: -9%;
 }
 .picture3 {
     position: absolute;
@@ -55,7 +82,19 @@
     background-repeat: no-repeat;
     width: 900px; /* Set desired size */
     height: 300px;
-}
+    transform: translateY(-100%);
+    animation: slideDown 2s ease forwards; 
+  }
+  @keyframes slideDown {
+      0% {
+          opacity: 0;
+          transform: translateY(-100%); 
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0); 
+      }
+  }
 
 .picture3 {
     background-image: url('./Assets/pic6.png'); /* Update with correct path */
@@ -66,16 +105,29 @@
 }
 
 .titleM {
-    margin-top: 20rem;
     font-family: "Poppins", sans-serif;
     font-size: 5rem;
-    font-weight: 500;
+    font-weight: 600;
     color: #ffffff;
     margin: 0;
-}
+    transform: translateY(-100%);
+    animation: slideDown 4s ease forwards; 
+  }
+  @keyframes slideDown {
+      0% {
+          opacity: 0;
+          transform: translateY(-100%); 
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0); 
+      }
+  }
+
 
 .homepage-button {
-    margin-top: 10rem;
+    position: absolute;
+    margin-top: 20rem;
     padding: 12px 24px;
     font-size: 1.2rem;
     font-weight: 600;
@@ -85,8 +137,19 @@
     border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
+    transform: translateY(-100%);
+    animation: slideDown 4s ease forwards; 
+  }
+  @keyframes slideDown {
+      0% {
+          opacity: 0;
+          transform: translateY(-100%); 
+      }
+      100% {
+          opacity: 1;
+          transform: translateY(0); 
+      }
+  }
 .homepage-button:hover {
     background-color: #162447;
 }

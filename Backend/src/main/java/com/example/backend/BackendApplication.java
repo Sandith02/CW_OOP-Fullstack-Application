@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Entry point for the Backend Spring Boot application.
- *
  * This class initializes the Spring Boot application and configures
  * Cross-Origin Resource Sharing (CORS) settings to allow requests
  * from the frontend application.
